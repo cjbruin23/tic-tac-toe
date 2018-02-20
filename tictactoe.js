@@ -1,5 +1,5 @@
 var currentPlayer = "X";
-var nextPlayer = "0";
+var nextPlayer = "O";
 
 var playerXSelections = new Array();
 var player0Selections = new Array();
@@ -17,7 +17,67 @@ const winningCombinations = [
 
 handleClick = function(event) {
   var cell = event.target;
-  console.log(cell.id);
+
+  if (cell.innerHTML != "") {
+    console.log("Cheater!");
+  }
+
+  cell.innerHTML = currentPlayer;
+
+  if(currentPlayer === "X") {
+    playerSelections = playerXSelections;
+    nextPlayer = "O";
+  } else {
+    playerSelections = player0Selections;
+    nextPlayer = "X";
+  }
+
+  playerSelections.push(parseInt(cell.id));
+
+  if(checkWinner(playerSelections)) {
+    alert("Player " + currentPlayer + " wins!");
+    resetGame();
+  }
+
+  if(checkDraw()) {
+    alert("Draw!");
+    resetGame();
+  }
+  //Swap players
+  currentPlayer = nextPlayer;
+}
+
+function checkWinner(playerSelected) {
+  for (let i = 0; i < winningCombinations.length; i++) {
+    matches = 0;
+    for (let j = 0; j < playerSelected.length; j++) {
+      if (winningCombinations[i].includes(playerSelected[j])) {
+        // console.log(winningCombinations[i]);
+        // console.log(playerSelected[j])
+        matches ++;
+
+      } else {
+        break;
+      }
+
+    }
+    if (matches === 3) {
+      return true;
+    }
+  }
+    return false;
+  }
+
+function checkDraw() {
+  return player0Selections.length + playerXSelections.length >= cells.length;
+}
+
+function resetGame() {
+  playerXSelections = new Array();
+  player0Selections = new Array();
+  for(let i = 0; i < cells.length; i++) {
+    cells[i].innerHTML = "";
+  }
 }
 
 var cells = document.querySelectorAll("td");
